@@ -1,0 +1,19 @@
+{
+  "name": "currencytransfer-marketplace",
+  "owner": {
+    "name": "CurrencyTransfer"
+  },
+  "metadata": {
+    "description": "Connect Claude to CurrencyTransfer: FX quotes, balances and trades through the CurrencyTransfer MCP server"
+  },
+  "plugins": [
+    {
+      "name": "currencytransfer",
+      "source": "./plugins/currencytransfer",
+      "displayName": "CurrencyTransfer",
+      "author": {
+        "name": "CurrencyTransfer"
+      }
+    }
+  ]
+}

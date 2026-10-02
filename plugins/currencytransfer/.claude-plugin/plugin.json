@@ -1,0 +1,23 @@
+{
+  "name": "currencytransfer",
+  "description": "Bring CurrencyTransfer to Claude. Get FX quotes, book trades, pay beneficiaries, add payees, see your cash position and track trades in plain language. Every money movement needs your explicit approval in the chat. Bundles the hosted CurrencyTransfer MCP server (sign in with your CurrencyTransfer account) with workflow skills.",
+  "version": "0.2.0",
+  "author": {
+    "name": "CurrencyTransfer",
+    "url": "https://www.currencytransfer.com"
+  },
+  "homepage": "https://github.com/currencytransfer/currencytransfer-marketplace",
+  "repository": "https://github.com/currencytransfer/currencytransfer-marketplace.git",
+  "license": "Apache-2.0",
+  "keywords": [
+    "currencytransfer",
+    "fx",
+    "foreign exchange",
+    "quotes",
+    "balances",
+    "trades",
+    "payments",
+    "mcp",
+    "beneficiaries"
+  ]
+}
