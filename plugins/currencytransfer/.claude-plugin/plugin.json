@@ -19,5 +19,13 @@
     "payments",
     "mcp",
     "beneficiaries"
-  ]
+  ],
+  "userConfig": {
+    "mcp_url": {
+      "type": "string",
+      "title": "CurrencyTransfer MCP server URL",
+      "description": "Which CurrencyTransfer environment to connect to. Beta: https://mcp-beta.currencytransfer.com · Stage: https://mcp-stage.currencytransfer.com · Production: https://mcp.currencytransfer.com",
+      "default": "https://mcp-beta.currencytransfer.com"
+    }
+  }
 }

@@ -11,7 +11,13 @@ claude plugin install currencytransfer@currencytransfer-marketplace
 
 You can also run these from inside Claude Code as `/plugin marketplace add …` and `/plugin install …`.
 
-The plugin registers an MCP server called `currencytransfer` pointing at **beta** (`https://mcp-beta.currencytransfer.com`). To use another environment, see [environments.md](environments.md).
+The plugin registers an MCP server called `currencytransfer` (shown as `plugin:currencytransfer:currencytransfer`) pointing at **beta** (`https://mcp-beta.currencytransfer.com`) by default. To start on production or stage instead, set the plugin's `mcp_url` option when installing:
+
+```sh
+claude plugin install currencytransfer@currencytransfer-marketplace --config mcp_url=https://mcp.currencytransfer.com
+```
+
+To switch later, see [environments.md](environments.md#switch-the-plugin-to-stage-or-production).
 
 ### Sign in
 

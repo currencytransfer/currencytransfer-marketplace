@@ -40,7 +40,9 @@ Then sign in:
 3. Your browser opens CurrencyTransfer. Sign in (with 2FA) and choose the account to connect.
 4. Back in Claude Code, try: *"What's my cash position?"* or `/currencytransfer:fx-quote`.
 
-> The plugin connects to the **beta** environment by default (`https://mcp-beta.currencytransfer.com`). See [Environments](#environments) to use stage or production.
+> The plugin connects to the **beta** environment by default (`https://mcp-beta.currencytransfer.com`). To use production, install with
+> `claude plugin install currencytransfer@currencytransfer-marketplace --config mcp_url=https://mcp.currencytransfer.com`,
+> or switch later with `/plugin configure`. See [Environments](#environments).
 
 More detail: [docs/connect-claude-code.md](docs/connect-claude-code.md).
 

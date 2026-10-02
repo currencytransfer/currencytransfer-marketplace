@@ -2,7 +2,7 @@
 
 Connects Claude to the hosted CurrencyTransfer MCP server and adds skills for common FX workflows.
 
-- **MCP server:** `currencytransfer` → `https://mcp-beta.currencytransfer.com` (beta). Sign in with your CurrencyTransfer account through `/mcp` → **Authenticate**. To use stage or production, see [../../docs/environments.md](../../docs/environments.md).
+- **MCP server:** `currencytransfer` → the URL in the plugin option `mcp_url`, by default `https://mcp-beta.currencytransfer.com` (beta). Set it with `--config mcp_url=…` on install, or with `/plugin configure currencytransfer@currencytransfer-marketplace` (see [../../docs/environments.md](../../docs/environments.md)). Sign in through `/mcp` → **Authenticate**.
 - **Surface:** reads and indicative quotes, plus booking, payments and beneficiaries where the server enables them. **Every money movement or account change needs your explicit approval in the chat.**
 
 ## Skills

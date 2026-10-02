@@ -23,9 +23,19 @@ claude mcp add --transport http --scope user currencytransfer-prod  https://mcp.
 claude mcp add --transport http --scope user currencytransfer-stage https://mcp-stage.currencytransfer.com
 ```
 
-Then authenticate each one in `/mcp`. The skills work with any of them. Claude uses whichever CurrencyTransfer server you name in your request ("on production, …"). If you don't name one and several are connected, the `ct-best-practices` skill tells Claude to ask you which.
+`claude plugin configure currencytransfer@currencytransfer-marketplace` (without `--values-stdin`) shows the current value. To go back to beta, set `mcp_url` to `https://mcp-beta.currencytransfer.com`.
 
-To use **only** production, disable the plugin's beta server in `/mcp` (or with `claude mcp` settings) and keep the skills.
+Check which server you're on with `claude mcp list`. The plugin's server is listed as `plugin:currencytransfer:currencytransfer` with its URL.
+
+## Use several environments at once
+
+The plugin connects to one environment. To work with another at the same time, e.g. production through the plugin and stage for testing, add the other as a separate server with a clear name:
+
+```sh
+claude mcp add --transport http --scope user currencytransfer-stage https://mcp-stage.currencytransfer.com
+```
+
+Authenticate it in `/mcp`. The skills work with every CurrencyTransfer server. Name the environment in your request ("on stage, …"). If you don't and several are connected, the `ct-best-practices` skill tells Claude to ask you which.
 
 ## claude.ai / Claude Desktop
 
