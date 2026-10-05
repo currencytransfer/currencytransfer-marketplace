@@ -1,0 +1,20 @@
+{
+  "name": "currencytransfer-marketplace",
+  "interface": {
+    "displayName": "CurrencyTransfer"
+  },
+  "plugins": [
+    {
+      "name": "currencytransfer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/currencytransfer"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Finance"
+    }
+  ]
+}

@@ -12,7 +12,7 @@ compatibility: Works with the CurrencyTransfer MCP server (connected and authent
 
 ## Approval rule: read first
 
-Claude may book trades, create payments and add beneficiaries, but **only with the user's explicit approval of each action**. This rule applies to every tool that changes the account:
+You may book trades, create payments and add beneficiaries, but **only with the user's explicit approval of each action**. This rule applies to every tool that changes the account:
 
 `create_trade`, `create_trade_payment`, `delete_trade_payment`, `upload_trade_document`, `delete_trade_document`, `initiate_balance_topup`, `create_beneficiary`, `update_beneficiary`, `delete_beneficiary`, `create_beneficiary_email_request`, `update_beneficiary_email_request`, `delete_beneficiary_email_request`, `create_rate_alert`, `update_rate_alert`, `delete_rate_alert`.
 
@@ -43,9 +43,9 @@ If a write tool isn't available, the connected server doesn't allow that action.
 
 Before the first CurrencyTransfer call in a conversation, or when something fails:
 
-1. **Are the tools there?** If no CurrencyTransfer tools are available, the server isn't connected or isn't signed in. In Claude Code, tell the user to run `/mcp`, pick the CurrencyTransfer server and choose **Authenticate**. On claude.ai or Claude Desktop, tell them to connect it under **Settings → Connectors** and switch it on in the chat's tools menu.
+1. **Are the tools there?** If no CurrencyTransfer tools are available, the server isn't connected or isn't signed in. Tell the user how to sign in for the app they're using. See "Signing in, by client" in [references/errors.md](references/errors.md).
 2. **Who is signed in?** Call `get_user`. Use `trading_account_name` to confirm the account, especially before showing financial data, and `first_name` to address the user.
-3. **Which environment?** The server URL tells you: `mcp-beta.…` is beta, `mcp-stage.…` is stage, `mcp.currencytransfer.com` is production. The plugin's server is always called `currencytransfer`, whichever URL its `mcp_url` option is set to (beta by default), so the name alone doesn't tell you. If you can't see the URL, ask the user, or have them run `claude mcp list`, before any approval summary. If several CurrencyTransfer servers are connected and the user didn't say which, ask. When the environment is beta or stage, say so once ("on beta"), so test data isn't mistaken for live data. Always name the environment in an approval summary, and say plainly when it's **production** (real money).
+3. **Which environment?** The server URL tells you: `mcp-beta.…` is beta, `mcp-stage.…` is stage, `mcp.currencytransfer.com` is production. The plugin's server is always called `currencytransfer`, whichever environment it points at (beta by default), so the name alone doesn't tell you. If you can't see the URL, ask the user, or have them run `claude mcp list` (Claude Code) or `codex mcp list` (Codex), before any approval summary. If several CurrencyTransfer servers are connected and the user didn't say which, ask. When the environment is beta or stage, say so once ("on beta"), so test data isn't mistaken for live data. Always name the environment in an approval summary, and say plainly when it's **production** (real money).
 
 ## Calling conventions
 
@@ -81,7 +81,7 @@ When you show beneficiary bank details, mask all but the last 4 characters of ac
 See [references/errors.md](references/errors.md). In short:
 
 - `invalid_input`: your input was wrong (UUID or date format), or the tool is disabled on this server. Fix it, or explain that it isn't available.
-- `provider_error` 401: the session needs a new sign-in (`/mcp` → **Authenticate**). 404: wrong ID, or the record belongs to another account. 422: read the field errors.
+- `provider_error` 401: the session needs a new sign-in (see "Signing in, by client" in the reference). 404: wrong ID, or the record belongs to another account. 422: read the field errors.
 - `timeout` / `transport_error`: CurrencyTransfer was unreachable. Reads were already retried. Tell the user and stop.
 - `uncertain`: a write may or may not have happened. Never retry. Check the current state first.
 - Don't retry the same failing call more than once.

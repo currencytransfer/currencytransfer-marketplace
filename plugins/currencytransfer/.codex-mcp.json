@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "currencytransfer": {
+      "type": "streamable-http",
+      "url": "https://mcp-beta.currencytransfer.com"
+    }
+  }
+}

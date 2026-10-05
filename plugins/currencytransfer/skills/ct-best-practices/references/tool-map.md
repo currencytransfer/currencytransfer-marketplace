@@ -1,6 +1,6 @@
 # CurrencyTransfer MCP tool map
 
-**Hosted** = exposed by the hosted server by default. **Approval** tools change the account. They appear only if the server operator has enabled all tools, and Claude calls them only after the user approves (see the approval rule in SKILL.md).
+**Hosted** = exposed by the hosted server by default. **Approval** tools change the account. They appear only if the server operator has enabled all tools, and you call them only after the user approves (see the approval rule in SKILL.md).
 
 | Domain | Tool | Kind | Hosted | Purpose |
 | --- | --- | --- | --- | --- |

@@ -1,0 +1,43 @@
+{
+  "name": "currencytransfer",
+  "version": "0.3.0",
+  "description": "Bring CurrencyTransfer to Codex and ChatGPT. Get FX quotes, book trades, pay beneficiaries, add payees, see your cash position and track trades in plain language. Every money movement needs your explicit approval in the chat. Bundles the hosted CurrencyTransfer MCP server (sign in with your CurrencyTransfer account) with workflow skills.",
+  "skills": "./skills/",
+  "mcpServers": "./.codex-mcp.json",
+  "author": {
+    "name": "CurrencyTransfer",
+    "url": "https://www.currencytransfer.com"
+  },
+  "homepage": "https://github.com/currencytransfer/currencytransfer-marketplace",
+  "repository": "https://github.com/currencytransfer/currencytransfer-marketplace.git",
+  "license": "Apache-2.0",
+  "keywords": [
+    "currencytransfer",
+    "fx",
+    "foreign exchange",
+    "quotes",
+    "balances",
+    "trades",
+    "payments",
+    "beneficiaries",
+    "finance",
+    "codex",
+    "mcp"
+  ],
+  "interface": {
+    "displayName": "CurrencyTransfer",
+    "shortDescription": "FX quotes, trades, payments and balances on CurrencyTransfer.",
+    "longDescription": "Get FX quotes, book trades, pay beneficiaries, add payees, see your cash position and track trades in plain language. Every money movement needs your explicit approval in the chat. Bundles the hosted CurrencyTransfer MCP server with workflow skills.",
+    "developerName": "CurrencyTransfer",
+    "category": "Finance",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "websiteURL": "https://www.currencytransfer.com",
+    "defaultPrompt": [
+      "What's my cash position on CurrencyTransfer?",
+      "Get me a quote to sell 10,000 GBP for EUR",
+      "What's the status of my last trade?",
+      "Add a new supplier from this invoice"
+    ],
+    "screenshots": []
+  }
+}

@@ -2,8 +2,11 @@
 
 ## The server shows "needs authentication" or "failed"
 
-- Run `/mcp` → **currencytransfer** → **Authenticate**. The first connection always needs a sign-in.
-- If authentication keeps failing, choose **Clear authentication** and try again.
+The first connection always needs a sign-in.
+
+- **Claude Code:** run `/mcp` → **currencytransfer** → **Authenticate**. If it keeps failing, choose **Clear authentication** and try again.
+- **Codex:** run `codex mcp login currencytransfer`. If it keeps failing, run `codex mcp logout currencytransfer` first. `codex mcp list` shows whether you're logged in.
+- **ChatGPT:** open the CurrencyTransfer app from settings and reconnect it.
 - Check the URL is the bare domain from [environments.md](environments.md): `https://mcp-beta.currencytransfer.com`, not `…/mcp` or `http://…`.
 - Check the server is up: `curl -s -o /dev/null -w '%{http_code}\n' -X POST https://mcp-beta.currencytransfer.com` should print `401`. A 401 here is correct, because it's the server asking for a sign-in.
 
@@ -13,7 +16,7 @@ CurrencyTransfer doesn't recognise the server URL as a resource it issues tokens
 
 ## Sign-in works but every call fails with 401
 
-The token belongs to a different environment than the server. For example, you signed in on beta and are connected to production, or a client reused an old token. Clear authentication for that server and sign in again.
+The token belongs to a different environment than the server. For example, you signed in on beta and are connected to production, or a client reused an old token. Sign out of that server and sign in again (Claude Code: **Clear authentication**. Codex: `codex mcp logout currencytransfer`, then `codex mcp login currencytransfer`).
 
 ## Calls start failing after a while
 
@@ -21,15 +24,15 @@ Access tokens expire after about 2 hours and are refreshed automatically. If ref
 
 ## "Session not found" (404)
 
-The server restarted or your session expired. Your client normally reconnects on its own. If it doesn't, restart Claude Code (or reconnect the connector).
+The server restarted or your session expired. Your client normally reconnects on its own. If it doesn't, restart Claude Code or Codex, or reconnect the connector or app.
 
 ## A tool I expected is missing
 
 Reads and quotes are always available. Booking trades, payments, beneficiary changes, top-ups and rate-alert changes appear only when the server operator has enabled them for that environment. If they're missing, use the CurrencyTransfer web app.
 
-## Claude keeps asking me to confirm
+## The assistant keeps asking me to confirm
 
-That's by design. Every booking, payment, beneficiary or other account change needs a fresh **yes** to an exact summary. Claude asks again if anything changed, for example when the price moved against you between the quote and your reply.
+That's by design. Every booking, payment, beneficiary or other account change needs a fresh **yes** to an exact summary. The assistant asks again if anything changed, for example when the price moved against you between the quote and your reply.
 
 ## Balances come back empty
 

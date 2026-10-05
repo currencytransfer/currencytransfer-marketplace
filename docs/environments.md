@@ -40,3 +40,17 @@ Authenticate it in `/mcp`. The skills work with every CurrencyTransfer server. N
 ## claude.ai / Claude Desktop
 
 Add one custom connector per environment and name them clearly, e.g. `CurrencyTransfer (Prod)` and `CurrencyTransfer (Beta)`. See [connect-claude-ai.md](connect-claude-ai.md).
+
+## OpenAI Codex
+
+Codex plugins have no settings, so the plugin's server points at beta. To use another environment, add your own server with the same name, `currencytransfer`. It replaces the plugin's:
+
+```sh
+codex mcp add currencytransfer --url https://mcp.currencytransfer.com
+```
+
+Sign in again when the browser opens. `codex mcp list` shows which URL is active, and `codex mcp remove currencytransfer` goes back to the plugin's beta server. See [connect-codex.md](connect-codex.md#switch-environment).
+
+## ChatGPT
+
+Add one developer-mode app per environment and name them clearly, e.g. `CurrencyTransfer (Prod)` and `CurrencyTransfer (Beta)`. See [connect-chatgpt.md](connect-chatgpt.md).

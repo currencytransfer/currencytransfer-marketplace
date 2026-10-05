@@ -1,8 +1,8 @@
 # currencytransfer plugin
 
-Connects Claude to the hosted CurrencyTransfer MCP server and adds skills for common FX workflows.
+Connects Claude Code or OpenAI Codex to the hosted CurrencyTransfer MCP server and adds skills for common FX workflows. One plugin and one set of skills serve both.
 
-- **MCP server:** `currencytransfer` → the URL in the plugin option `mcp_url`, by default `https://mcp-beta.currencytransfer.com` (beta). Set it with `--config mcp_url=…` on install, or with `/plugin configure currencytransfer@currencytransfer-marketplace` (see [../../docs/environments.md](../../docs/environments.md)). Sign in through `/mcp` → **Authenticate**.
+- **MCP server:** `currencytransfer` → the URL in the plugin option `mcp_url`, by default `https://mcp-beta.currencytransfer.com` (beta). Set it with `--config mcp_url=…` on install, or with `/plugin configure currencytransfer@currencytransfer-marketplace` (see [../../docs/environments.md](../../docs/environments.md)). Sign in through `/mcp` → **Authenticate**. In Codex the server is fixed to beta unless you replace it with `codex mcp add currencytransfer --url …` (see [../../docs/connect-codex.md](../../docs/connect-codex.md#switch-environment)), and you sign in with `codex mcp login currencytransfer`.
 - **Surface:** reads and indicative quotes, plus booking, payments and beneficiaries where the server enables them. **Every money movement or account change needs your explicit approval in the chat.**
 
 ## Skills
@@ -17,7 +17,7 @@ Connects Claude to the hosted CurrencyTransfer MCP server and adds skills for co
 | [trade-status](skills/trade-status/SKILL.md) | `/currencytransfer:trade-status` | A trade's status, settlement instructions, payment outcomes |
 | [ct-best-practices](skills/ct-best-practices/SKILL.md) | `/currencytransfer:ct-best-practices` | Connection checks, the approval rule, other tasks (beneficiaries, countries, holidays, alerts), errors |
 
-Claude loads the right skill on its own when your request matches. The slash commands are there for when you want a specific one.
+The assistant loads the right skill on its own when your request matches. The commands above are Claude Code's. In Codex, use `$fx-quote`, `$book-trade` and so on.
 
 ## Install
 
@@ -25,5 +25,23 @@ Claude loads the right skill on its own when your request matches. The slash com
 claude plugin marketplace add https://github.com/currencytransfer/currencytransfer-marketplace
 claude plugin install currencytransfer@currencytransfer-marketplace
 ```
+
+OpenAI Codex:
+
+```sh
+codex plugin marketplace add currencytransfer/currencytransfer-marketplace
+codex plugin add currencytransfer@currencytransfer-marketplace
+codex mcp login currencytransfer
+```
+
+## Files
+
+| File | Used by |
+| --- | --- |
+| `.claude-plugin/plugin.json`, `.mcp.json` | Claude Code. The server URL comes from the `mcp_url` plugin option. |
+| `.codex-plugin/plugin.json`, `.codex-mcp.json` | OpenAI Codex. The server URL is written in the file (beta). |
+| `skills/` | Both |
+
+Keep `version` the same in both `plugin.json` files.
 
 See the [repository README](../../README.md) for other clients.
