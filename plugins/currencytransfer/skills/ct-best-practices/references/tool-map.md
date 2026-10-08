@@ -22,7 +22,8 @@
 | | `list_trade_payments` | read | ✓ | Payments in a trade (`trade_uuid`) |
 | | `get_trade_payment` | read | ✓ | One payment (`trade_uuid`, `uuid`) |
 | | `validate_trade_payment` | read | ✓ | Pre-flight check for a payment, with the same fields as `create_trade_payment` |
-| | `create_trade`, `create_trade_payment`, `upload_trade_document`, `delete_trade_document` | write | if enabled | **Approval** |
+| | `create_trade`, `upload_trade_document`, `delete_trade_document` | write | if enabled | **Approval** |
+| | `create_trade_payment` | write | if enabled | **Approval.** Takes `idempotency_key`: always send a new unique UUID with each new payment. If an error returns the key, repeat the same call once with the same arguments and key. |
 | | `delete_trade_payment` | write | if enabled | **Approval.** Only within 5 minutes of the payment's creation. After that it's locked. |
 | | `update_trade_payment` | write | if enabled | **Don't use.** Payments can't be changed after creation. Remove the payment and create a new one. |
 | Beneficiaries | `list_beneficiaries` | read | ✓ | Paginated. Filter by `currency`. |
