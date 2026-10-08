@@ -52,4 +52,4 @@ That's by design. Every booking, payment, beneficiary or other account change ne
 | `invalid_input` | Rejected by the MCP server before reaching CurrencyTransfer (bad UUID, date format, or a disabled tool) | Fix the input. If the tool is disabled, it isn't available on this server. |
 | `provider_error` | CurrencyTransfer returned an error (4xx/5xx) | Read the status and field errors. 401 means sign in again, 404 means wrong ID or no access, 422 means invalid values. |
 | `timeout` / `transport_error` | The server couldn't reach CurrencyTransfer | Reads are retried automatically. Try again later. |
-| `uncertain` | A write was sent but the outcome is unknown | Don't repeat it blindly. Check the current state first. |
+| `uncertain` | A write was sent but the outcome is unknown | Don't repeat it blindly. Check the current state first. The exception is creating a payment: the assistant sends a unique `idempotency_key` with it, and if the error returns that key, it repeats the same request once. That can't create a duplicate. |

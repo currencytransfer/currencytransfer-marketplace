@@ -33,7 +33,34 @@ Approval is narrow:
 After the action:
 
 - Report what happened: IDs, references, status and the next step.
-- If the result is `uncertain` or a timeout, **don't retry**. First check whether the action happened (`list_trades`, `list_trade_payments`, `list_beneficiaries`) and tell the user what you found.
+- If the result is `uncertain` or a timeout, **don't retry**. First check whether the action happened (`list_trades`, `list_trade_payments`, `list_beneficiaries`) and tell the user what you found. The one exception is an error that includes an `idempotency_key`: see "Idempotency keys" below.
+
+### Idempotency keys
+
+Some create tools take an `idempotency_key`. Currently that's only **`create_trade_payment`**. If a tool you're about to call has an `idempotency_key` input, the same rules apply to it.
+
+**Always send a key.** Generate a new unique key for every create call to such a tool:
+
+- Use a random **UUID v4**. If you can run code or a shell, generate it there (e.g. `uuidgen`, or `python3 -c "import uuid; print(uuid.uuid4())"`). Otherwise write out a fresh random one yourself.
+- One key per resource. Two payments in one approved list get two different keys.
+- Never reuse a key from an earlier call, never copy one from an example, and never build one from the request's details (amount, date, reference, beneficiary).
+- Remember the key until the call has finished. You need it if the call fails.
+
+**If an error comes back with an `idempotency_key`,** you can repeat the request safely. Every error for a call you sent with a key includes that key, next to whatever CurrencyTransfer returned (`field_errors`).
+
+1. Repeat the **same** call **once**: same tool, exactly the same arguments, and the same `idempotency_key`. It can't create the resource twice. If the first attempt went through, you get the original result back. This is the action the user already approved, so it needs no new approval.
+2. If the retry succeeds, report it as usual.
+3. If the retry fails too, **stop**. Don't retry a second time, whether or not that error has a key. Check whether the resource exists (`list_trade_payments`) and tell the user what you found.
+
+Never change the arguments or the key for the retry, and never send a new key to "try again" after an unknown outcome. That can create a duplicate.
+
+A repeat only helps when the failure may be temporary: an unknown outcome (`uncertain`, timeout), a 5xx or 429, or 409 `idempotency_request_in_progress`. When the error is about the request itself, the repeat fails the same way, so skip it and deal with the cause:
+
+- 422 (validation): explain `field_errors` and fix the values with the user. The corrected request is a new one. It needs a new approval and a new key.
+- 403 (permission): tell the user.
+- 409 `idempotency_key_reused`: this key was already used for a request with different arguments. `field_errors.original_response` shows what that request created. Tell the user. Use a new key only for a genuinely new, approved request.
+
+**If an error comes back without an `idempotency_key`,** you sent the call without a key. Don't retry. Check the current state first.
 
 Never call `update_trade_payment`: payments can't be changed after creation. To change a payment, remove it within its 5-minute window, then create a new one (create-payment skill).
 
@@ -83,5 +110,5 @@ See [references/errors.md](references/errors.md). In short:
 - `invalid_input`: your input was wrong (UUID or date format), or the tool is disabled on this server. Fix it, or explain that it isn't available.
 - `provider_error` 401: the session needs a new sign-in (see "Signing in, by client" in the reference). 404: wrong ID, or the record belongs to another account. 422: read the field errors.
 - `timeout` / `transport_error`: CurrencyTransfer was unreachable. Reads were already retried. Tell the user and stop.
-- `uncertain`: a write may or may not have happened. Never retry. Check the current state first.
+- `uncertain`: a write may or may not have happened. Never retry. Check the current state first. Exception: if the error includes an `idempotency_key`, repeat the same call once with the same arguments and key (see "Idempotency keys").
 - Don't retry the same failing call more than once.

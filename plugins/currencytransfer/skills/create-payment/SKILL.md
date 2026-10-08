@@ -69,7 +69,9 @@ Reply **yes** to create this payment.
 
 ## 5. On a clear "yes"
 
-Call `create_trade_payment` with the approved values, unchanged. For an approved list, make one call per payment, in order. If any of them fails, stop and report which went through.
+First generate an **idempotency key** for the payment: a new random UUID v4 (run `uuidgen` or similar if you can run code, otherwise write out a fresh random one). Every payment gets its own new key. Never reuse a key, copy one from an example, or build it from the payment's details.
+
+Then call `create_trade_payment` with the approved values, unchanged, and that key as `idempotency_key`. For an approved list, make one call per payment, in order, each with its own key. If any of them fails, stop and report which went through.
 
 Then report:
 
@@ -83,7 +85,19 @@ Add any of these that apply:
 - `documents_requested`: the broker needs a supporting document, e.g. the invoice. Offer to attach a file the user provides with `upload_trade_document` (`category: invoice`, `payment_uuid`). That's a separate action that needs approval.
 - The trade's new remaining amount, and whether more payments are needed
 
-Errors: 422 → explain `field_codes` and fix with the user. 403 → the trader lacks permission. `uncertain` or a timeout → **don't retry**; call `list_trade_payments` and check whether the payment exists.
+Errors:
+
+Every error for a call sent with a key returns that `idempotency_key`, together with what CurrencyTransfer said (`field_errors`).
+
+- **The error includes an `idempotency_key`:** you can repeat the same call **once**, with exactly the same `trade_uuid`, `beneficiary_uuid`, `amount`, `reference` and `purpose`, and the same `idempotency_key`. It can't create a second payment. If the first attempt went through, you get that payment back. This needs no new approval, because it's the payment the user already approved. If the retry fails too, stop. Don't retry again. Call `list_trade_payments`, check whether the payment exists, and tell the user.
+- **Repeat when the failure may be temporary:** `uncertain` or a timeout, a 5xx or 429, or 409 `idempotency_request_in_progress`.
+- **Don't bother repeating when the error is about the payment itself.** It fails the same way:
+  - 422 → explain `field_errors` and fix with the user. A corrected payment is a new request: it needs a new approval and a new key.
+  - 403 → the trader lacks permission.
+  - 409 `idempotency_key_reused` → the key was already used for a different payment. `field_errors.original_response` shows that payment. Tell the user.
+- **No `idempotency_key` in the error:** the call went out without a key. Don't retry. On `uncertain` or a timeout, call `list_trade_payments` and check whether the payment exists.
+
+Never retry with a different key or changed values, and never use a new key to "try again" after an unknown outcome. That can create a duplicate payment.
 
 ## 6. Change or remove a payment
 
@@ -97,7 +111,7 @@ Payments can't be edited. **Never call `update_trade_payment`**, not even to cha
 
 1. Explain that payments can't be edited, so you'll remove this payment and then create a new one with the corrected details.
 2. Remove it as above, with its own approval.
-3. Once it's removed, ask the user to confirm the details for the new payment. Then follow sections 3–5 as for any new payment, with a new summary and approval.
+3. Once it's removed, ask the user to confirm the details for the new payment. Then follow sections 3–5 as for any new payment, with a new summary, a new approval and a new idempotency key.
 
 If the payment is already locked, it can't be changed. Say so, as above.
 

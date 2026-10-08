@@ -12,7 +12,9 @@ Tool errors come back as an error result with a **category**. Provider errors al
 | `provider_error` 409 (booking) | `already_booked`, `market_shifted` or `invalid_delivery_date` | See the book-trade skill. Never book twice. |
 | `provider_error` 429 / 5xx | Rate-limited or provider trouble | Reads were already retried. Tell the user to try again shortly. |
 | `timeout`, `transport_error` | CurrencyTransfer unreachable | Same as above |
-| `uncertain` | A write was sent but the result is unknown | **Never retry.** Check whether it happened (`list_trades`, `list_trade_payments`, `list_beneficiaries`) and tell the user. For a quote, just request a new one. |
+| `uncertain` | A write was sent but the result is unknown | **Never retry.** Check whether it happened (`list_trades`, `list_trade_payments`, `list_beneficiaries`) and tell the user. For a quote, just request a new one. Exception: the error includes an `idempotency_key`, see the next row. |
+| Any error that includes an `idempotency_key` | The call was sent with a key. Every such error returns the key, next to what CurrencyTransfer returned. | You can repeat the same call **once**, with the same arguments and the same `idempotency_key`. It can't create the resource twice. Do it when the failure may be temporary (unknown outcome, 5xx, 429, 409 `idempotency_request_in_progress`). For 422, 403 or 409 `idempotency_key_reused` the repeat fails the same way, so fix the cause instead. If the repeat fails too, stop, check the current state and tell the user. |
+| `provider_error` 409 `idempotency_key_reused` | This key was already used for a request with different arguments. `field_errors.original_response` holds the response to that request. | Don't retry. You reused a key. Tell the user what the original request created, and use a new key only for a genuinely new, approved payment. |
 | `malformed_response` | Unexpected response from the provider | Report it, then retry once at most |
 
 ## Signing in, by client
